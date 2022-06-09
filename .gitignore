@@ -1,3 +1,4 @@
 public
 .DC_*
 node_modules
+.DS_Store

@@ -1,15 +1,25 @@
 import { renderBlock } from './lib.js'
 
-const getStringFromDate = (date: Date): string => date.getFullYear() + '-' + (date.getMonth()+ 1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0');
-const getDateFromString = (date: string): Date => new Date(+date.split('-')[0], +date.split('-')[1], +date.split('-')[2]);
+const TWO_DAYS = 2
+const ONE_MONTH = 1
+const TWO_MONTHS = 2
+
+const getStringFromDate = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = (date.getMonth() + ONE_MONTH).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2,'0')
+
+  return `${year}-${month}-${day}`
+}
+const getDateFromString = (date: string): Date => new Date(+date.split('-')[0], +date.split('-')[1], +date.split('-')[2])
 
 const minDate: Date = new Date();
-const maxDate: Date = new Date(minDate.getFullYear(), minDate.getMonth() + 1, (new Date(minDate.getFullYear(), minDate.getMonth() + 2, 0)).getDate());
-const minCheckoutDate: Date = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() + 2);
+const maxDate: Date = new Date(minDate.getFullYear(), minDate.getMonth() + ONE_MONTH, (new Date(minDate.getFullYear(), minDate.getMonth() + TWO_MONTHS, 0)).getDate())
+const minCheckoutDate: Date = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate() + TWO_DAYS)
 
 export function renderSearchFormBlock(dateStart: string = getStringFromDate(minDate), dateEnd: string = getStringFromDate(minCheckoutDate)) {
-  const dateStartFromString = getDateFromString(dateStart);
-  const dateEndFromString = getDateFromString(dateEnd);
+  const dateStartFromString = getDateFromString(dateStart)
+  const dateEndFromString = getDateFromString(dateEnd)
   
   renderBlock(
     'search-form-block',

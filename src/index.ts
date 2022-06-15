@@ -4,6 +4,7 @@ import { renderUserBlock } from './user.js'
 import { renderToast } from './lib.js'
 
 window.addEventListener('DOMContentLoaded', () => {
+  // const userData = getUserData()
   renderUserBlock('Wade Warren', '/img/avatar.png', 1)
   renderSearchFormBlock()
   renderSearchStubBlock()
@@ -12,3 +13,5 @@ window.addEventListener('DOMContentLoaded', () => {
     {name: 'Понял', handler: () => {console.log('Уведомление закрыто')}}
   )
 })
+
+localStorage.setItem('user', JSON.stringify({username: 'Wade Warren', avatarUrl: '/img/avatar.png'}));

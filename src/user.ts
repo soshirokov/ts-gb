@@ -20,8 +20,38 @@ export function renderUserBlock (userName: string, avatarLink: string, favoriteI
   )
 }
 
-// export function getUserData(): { username: string, avatarUrl: string } {   
-//   const user: { username: unknown, avatarUrl: unknown } = JSON.parse(localStorage.getItem('user'))
+export function getUserData(user: unknown): { username: string, avatarUrl: string } {   
+  const emptyUser = {
+    username: 'unknown',
+    avatarUrl: '/img/empty.png'
+  }
+  
+  const result = {
+    username: null,
+    avatarUrl: null
+  }
 
-//   return user
-// }
+  if (typeof user !== 'object' || !user) {
+    return emptyUser
+  } 
+  
+  Object.hasOwn(user, 'username') && user['username'] ? result.username = user['username'] : result.username = emptyUser.username
+  Object.hasOwn(user, 'avatarUrl') && user['avatarUrl'] ? result.avatarUrl = user['avatarUrl'] : result.avatarUrl = emptyUser.avatarUrl
+
+  return result
+}
+
+export function getFavoritesAmount(user: unknown): number { 
+  if (typeof user !== 'object' || !user) {
+    return 0
+  } 
+
+  if (!Object.hasOwn(user, 'favoritesAmount') || !user['favoritesAmount'].length) { 
+    return 0
+  }
+
+  const result = parseInt(user['favoritesAmount'])
+  
+
+  return isNaN(result) ? 0 : result
+}

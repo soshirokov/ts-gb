@@ -16,6 +16,11 @@ export interface IPlaces {
   price: number
 }
 
+export interface IUser { 
+  username: string,
+  avatarUrl: string
+}
+
 export interface IRequestParams {
   method: 'GET' | 'PATCH',
   endPoint: string,

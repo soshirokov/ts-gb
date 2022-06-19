@@ -1,16 +1,20 @@
+import { IPlaces, IUser } from './interfaces.js'
 import { renderBlock } from './lib.js'
 
-export function renderUserBlock (userName: string, avatarLink: string, favoriteItemsAmount?: number) {
-  const favoritesCaption = favoriteItemsAmount ? favoriteItemsAmount : 'ничего нет'
-  const hasFavoriteItems = favoriteItemsAmount ? true : false
+export function renderUserBlock() {
+  const userData = getUserData()
+  const favoritesAmount = getFavoritesAmount()
+
+  const favoritesCaption = favoritesAmount ? favoritesAmount : 'ничего нет'
+  const hasFavoriteItems = favoritesAmount ? true : false
 
   renderBlock(
     'user-block',
     `
     <div class="header-container">
-      <img class="avatar" src="${avatarLink}" alt="Wade Warren" />
+      <img class="avatar" src="${userData.avatarUrl}" alt="Wade Warren" />
       <div class="info">
-          <p class="name">${userName}</p>
+          <p class="name">${userData.username}</p>
           <p class="fav">
             <i class="heart-icon${hasFavoriteItems ? ' active' : ''}"></i>${favoritesCaption}
           </p>
@@ -20,7 +24,9 @@ export function renderUserBlock (userName: string, avatarLink: string, favoriteI
   )
 }
 
-export function getUserData(user: unknown): { username: string, avatarUrl: string } {   
+export function getUserData(): IUser {   
+  const user:unknown = JSON.parse(localStorage.getItem('user'))
+
   const emptyUser = {
     username: 'unknown',
     avatarUrl: '/img/empty.png'
@@ -41,17 +47,35 @@ export function getUserData(user: unknown): { username: string, avatarUrl: strin
   return result
 }
 
-export function getFavoritesAmount(user: unknown): number { 
-  if (typeof user !== 'object' || !user) {
-    return 0
+export function getFavoritesAmount(): number { 
+  const favoriteItems = getFavorites()
+
+  return favoriteItems.length
+}
+
+function getFavorites(): Pick<IPlaces, 'id' | 'image' | 'name'>[] { 
+  const favoriteItems: unknown = JSON.parse(localStorage.getItem('favoriteItems'))
+
+  if (!Array.isArray(favoriteItems) || favoriteItems.length === 0) {
+    return []
   } 
 
-  if (!Object.hasOwn(user, 'favoritesAmount') || !user['favoritesAmount'].length) { 
-    return 0
-  }
+  return favoriteItems
+}
 
-  const result = parseInt(user['favoritesAmount'])
-  
+export function toggleFavorites(favPlace: Pick<IPlaces, 'id' | 'image' | 'name'>): void { 
+  const favoriteItems = getFavorites()
 
-  return isNaN(result) ? 0 : result
+  const filtredFavorites = favoriteItems.filter((fav: Pick<IPlaces, 'id' | 'image' | 'name'>) => fav.id !== favPlace.id)
+
+  filtredFavorites.length === favoriteItems.length ? 
+    localStorage.setItem('favoriteItems', JSON.stringify([...favoriteItems, favPlace])) : 
+    localStorage.setItem('favoriteItems', JSON.stringify(filtredFavorites))
+}
+
+
+export function isFavorite(placeId: number): boolean { 
+  const favoriteItems = getFavorites()
+
+  return favoriteItems.find((fav: Pick<IPlaces, 'id' | 'image' | 'name'>) => fav.id === placeId) ? true : false
 }

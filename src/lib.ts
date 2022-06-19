@@ -34,7 +34,7 @@ export function renderToast (message, action) {
   }
 }
 
-export async function fetchHomeApi(requestParams: IRequestParams): Promise<IPlaces[] | Error> {
+export async function fetchHomeApi(requestParams: IRequestParams): Promise<IPlaces[] |  Record<string, string>> {
   if (requestParams.method === 'GET') {
     const fetchURL = HOMY_API_URL + requestParams.endPoint + serializeToGetParams(requestParams.parameters)
     const response = await fetch(fetchURL)

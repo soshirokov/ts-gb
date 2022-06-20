@@ -74,7 +74,7 @@ export function toggleFavorites(favPlace: Pick<IPlaces, 'id' | 'image' | 'name'>
 }
 
 
-export function isFavorite(placeId: number): boolean { 
+export function isFavorite(placeId: string): boolean { 
   const favoriteItems = getFavorites()
 
   return favoriteItems.find((fav: Pick<IPlaces, 'id' | 'image' | 'name'>) => fav.id === placeId) ? true : false

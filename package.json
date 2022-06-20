@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "types": "./public/scripts/types/index.d.ts",
   "dependencies": {
     "typescript": "^4.7.3"
   },

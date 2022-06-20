@@ -1,13 +1,5 @@
-export interface ISearchFormData { 
-  'city': string,
-  'coordinates': [number, number],
-  'check-in-date': Date,
-  'check-out-date': Date,
-  'max-price': number,
-}
-
 export interface IPlaces { 
-  id: number,
+  id: string,
   image:	string,
   name:	string,
   description:	string,
@@ -27,19 +19,20 @@ export interface IRequestParams {
   parameters: IGetPlaceParams | IFindPlacesParams | IBookPlaceParams
 }
 
-export interface IGetPlaceParams extends Record<string, string | number> {
+export interface IGetPlaceParams {
   id: number,
   coordinates?: string,
 }
 
-export interface IFindPlacesParams extends Record<string, string | number> {
-  coordinates: string,
+export interface IFindPlacesParams {
+  city?: string,
+  coordinates?: string,
   checkInDate: number,
   checkOutDate: number,
   maxPrice?: number
 }
 
-export interface IBookPlaceParams extends Record<string, number> {
+export interface IBookPlaceParams {
   id: number,
   checkInDate: number,
   checkOutDate: number

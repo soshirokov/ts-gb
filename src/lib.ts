@@ -1,4 +1,4 @@
-import { IBookPlaceParams, IFindPlacesParams, IGetPlaceParams, IPlaces, IRequestParams } from './interfaces.js'
+import { IPlaces, IRequestParams } from './interfaces.js'
 import { HOMY_API_URL } from './constants.js'
 
 export function renderBlock (elementId, html) {
@@ -49,6 +49,7 @@ export async function fetchHomeApi(requestParams: IRequestParams): Promise<IPlac
   }
 }
 
-export function serializeToGetParams(params: Record<string, string | number>): string { 
+export function serializeToGetParams(params: object): string { 
   return '?' + Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
 }
+

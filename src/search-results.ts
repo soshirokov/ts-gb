@@ -2,6 +2,12 @@ import { IPlaces } from './interfaces.js'
 import { renderBlock } from './lib.js'
 import { isFavorite, renderUserBlock, toggleFavorites } from './user.js'
 
+enum sortVariants { 
+  price_ASC = 'price_ASC',
+  price_DESC = 'price_DESC',
+  distance_ASC = 'distance_ASC',
+}
+
 export function renderSearchStubBlock () {
   renderBlock(
     'search-results-block',
@@ -26,53 +32,23 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage) {
   )
 }
 
-export function renderSearchResultsBlock(places: IPlaces[] | Record<string, string> | Error): void {
-  const isPlaces = Array.isArray(places)
-
-  if (!isPlaces) {
-    renderEmptyOrErrorSearchBlock(places['message']);
-  } 
-  if (isPlaces && places.length === 0) { 
+export function renderSearchResultsBlock(places: IPlaces[]): void {
+  if (places.length === 0) { 
     renderEmptyOrErrorSearchBlock('Ничего не нашлось =(');
-  }
-  if (isPlaces && places.length > 0) { 
+  } else { 
     let html = `<div class="search-results-header">
                   <p>Результаты поиска</p>
                   <div class="search-results-filter">
                       <span><i class="icon icon-filter"></i> Сортировать:</span>
-                      <select>
-                          <option selected="">Сначала дешёвые</option>
-                          <option selected="">Сначала дорогие</option>
-                          <option>Сначала ближе</option>
+                      <select id="searchSort">
+                          <option value="">Выбрать</option>
+                          <option value="price_ASC">Сначала дешёвые</option>
+                          <option value="price_DESC">Сначала дорогие</option>
+                          <option value="distance_ASC">Сначала ближе</option>
                       </select>
                   </div>
                 </div>
-                  <ul class="results-list">`
-    
-    places.map(place => {
-      html += `<li class="result">
-                <div class="result-container">
-                  <div class="result-img-container">
-                    <div id="${place.id}" class="favorites ${isFavorite(place.id) && 'active'}"></div>
-                    <img class="result-img" src="${place.image}" alt="">
-                  </div>	
-                  <div class="result-info">
-                    <div class="result-info--header">
-                      <p class="result-info--name">${place.name}</p>
-                      <p class="price">${place.price}&#8381;</p>
-                    </div>
-                    ${place.remoteness ? `<div class="result-info--map"><i class="map-icon"></i> ${place.remoteness}км от вас </div>` : ''}
-                    <div class="result-info--descr">${place.description}</div>
-                    <div class="result-info--footer">
-                      <div>
-                        <button>Забронировать</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>`
-    })
-
+                  <ul id="results-list" class="results-list">`
     html += '</ul>'
 
     renderBlock(
@@ -80,8 +56,45 @@ export function renderSearchResultsBlock(places: IPlaces[] | Record<string, stri
       html
     )
 
-    document.querySelectorAll('.favorites').forEach(fav => { fav.addEventListener('click', toggleFavoriteItem) })
+    renderResultList(places)
+
+    document.querySelector('#searchSort').addEventListener('change', (e) => sortResults(e.target, places))
   }
+}
+
+function renderResultList(places: IPlaces[]): void { 
+  let html = ''
+
+  places.map(place => {
+    html += `<li class="result">
+              <div class="result-container">
+                <div class="result-img-container">
+                  <div id="${place.id}" class="favorites ${isFavorite(place.id) && 'active'}"></div>
+                  <img class="result-img" src="${place.image}" alt="">
+                </div>	
+                <div class="result-info">
+                  <div class="result-info--header">
+                    <p class="result-info--name">${place.name}</p>
+                    <p class="price">${place.price}&#8381;</p>
+                  </div>
+                  ${place.remoteness ? `<div class="result-info--map"><i class="map-icon"></i> ${place.remoteness}км от вас </div>` : ''}
+                  <div class="result-info--descr">${place.description}</div>
+                  <div class="result-info--footer">
+                    <div>
+                      <button>Забронировать</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>`
+  })
+
+  renderBlock(
+    'results-list',
+    html
+  )
+
+  document.querySelectorAll('.favorites').forEach(fav => { fav.addEventListener('click', toggleFavoriteItem) })
 }
 
 function toggleFavoriteItem(e: Event): void {
@@ -105,5 +118,21 @@ function toggleFavoriteItem(e: Event): void {
     e.target.classList.toggle('active')
 
     renderUserBlock()
+  }
+}
+
+function sortResults(select: EventTarget, places: IPlaces[]): void { 
+  if (select instanceof HTMLSelectElement) {
+    switch (select.value) { 
+    case sortVariants.price_ASC:
+      renderResultList(places.sort((a,b)=> a.price > b.price ? 1 : -1))
+      break;
+    case sortVariants.price_DESC:
+      renderResultList(places.sort((a,b)=> a.price < b.price ? 1 : -1))
+      break;
+    case sortVariants.distance_ASC:
+      renderResultList(places.sort((a,b)=> a.remoteness > b.remoteness ? 1 : -1))
+      break;
+    }
   }
 }

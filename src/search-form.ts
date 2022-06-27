@@ -1,5 +1,5 @@
-import { getFlatsSDK, renderBlock, getHomeAPI } from './lib.js'
-import { IFindPlacesParams, IPlaces } from './interfaces.js'
+import { renderBlock } from './lib.js'
+import { IFindPlacesParams } from './interfaces.js'
 import { renderSearchResultsBlock } from './search-results.js'
 import { Places } from './classes.js'
 

@@ -35,7 +35,7 @@ export abstract class FindPlaces {
     }
   }
   
-  private static serializeToGetParams(params: object): string { 
+  private static serializeToGetParams(params: {[key: string]: string | number}): string { 
     return '?' + Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
   }
   

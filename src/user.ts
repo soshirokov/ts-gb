@@ -24,17 +24,17 @@ export function renderUserBlock() {
   )
 }
 
-export function getUserData(): IUser {   
-  const user:unknown = JSON.parse(localStorage.getItem('user'))
+export function getUserData(): IUser {
+  const user: unknown = JSON.parse(localStorage.getItem('user'))
 
-  const emptyUser = {
+  const emptyUser: IUser = {
     username: 'unknown',
     avatarUrl: '/img/empty.png'
   }
   
-  const result = {
-    username: null,
-    avatarUrl: null
+  const result: IUser = {
+    username: '',
+    avatarUrl: ''
   }
 
   if (typeof user !== 'object' || !user) {

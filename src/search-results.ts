@@ -1,12 +1,7 @@
+import { FindPlaces } from './classes.js'
 import { IPlaces } from './interfaces.js'
 import { renderBlock } from './lib.js'
 import { isFavorite, renderUserBlock, toggleFavorites } from './user.js'
-
-enum sortVariants { 
-  price_ASC = 'price_ASC',
-  price_DESC = 'price_DESC',
-  distance_ASC = 'distance_ASC',
-}
 
 export function renderSearchStubBlock () {
   renderBlock(
@@ -44,7 +39,7 @@ export function renderSearchResultsBlock(places: IPlaces[]): void {
                           <option value="">Выбрать</option>
                           <option value="price_ASC">Сначала дешёвые</option>
                           <option value="price_DESC">Сначала дорогие</option>
-                          <option value="distance_ASC">Сначала ближе</option>
+                          <option value="remoteness_ASC">Сначала ближе</option>
                       </select>
                   </div>
                 </div>
@@ -123,16 +118,11 @@ function toggleFavoriteItem(e: Event): void {
 
 function sortResults(select: EventTarget, places: IPlaces[]): void { 
   if (select instanceof HTMLSelectElement) {
-    switch (select.value) { 
-    case sortVariants.price_ASC:
-      renderResultList(places.sort((a,b)=> a.price > b.price ? 1 : -1))
-      break;
-    case sortVariants.price_DESC:
-      renderResultList(places.sort((a,b)=> a.price < b.price ? 1 : -1))
-      break;
-    case sortVariants.distance_ASC:
-      renderResultList(places.sort((a,b)=> a.remoteness > b.remoteness ? 1 : -1))
-      break;
-    }
+    if (select.value !== '') {
+      const [orderBy, orderType] = select.value.split('_')
+      if ((orderBy == 'price' || orderBy == 'remoteness') && (orderType == 'ASC' || orderType == 'DESC')) {
+        renderResultList(FindPlaces.sortPlaces(places, orderBy, orderType))
+      }
+    } 
   }
 }

@@ -21,13 +21,13 @@ export interface IRequestParams {
 }
 
 export interface IGetPlaceParams {
-  [key: string]: string | number,
+  [key: string]: string | number | undefined,
   id: number,
   coordinates?: string,
 }
 
 export interface IFindPlacesParams {
-  [key: string]: string | number,
+  [key: string]: string | number | undefined,
   city?: string,
   coordinates?: string,
   checkInDate: number,

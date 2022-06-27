@@ -1,12 +1,7 @@
+import { Places } from './classes.js'
 import { IPlaces } from './interfaces.js'
 import { renderBlock } from './lib.js'
 import { isFavorite, renderUserBlock, toggleFavorites } from './user.js'
-
-enum sortVariants { 
-  price_ASC = 'price_ASC',
-  price_DESC = 'price_DESC',
-  distance_ASC = 'distance_ASC',
-}
 
 export function renderSearchStubBlock () {
   renderBlock(
@@ -32,8 +27,8 @@ export function renderEmptyOrErrorSearchBlock (reasonMessage) {
   )
 }
 
-export function renderSearchResultsBlock(places: IPlaces[]): void {
-  if (places.length === 0) { 
+export function renderSearchResultsBlock(places: Places): void {
+  if (places.getPlaces().length === 0) { 
     renderEmptyOrErrorSearchBlock('Ничего не нашлось =(');
   } else { 
     let html = `<div class="search-results-header">
@@ -44,7 +39,7 @@ export function renderSearchResultsBlock(places: IPlaces[]): void {
                           <option value="">Выбрать</option>
                           <option value="price_ASC">Сначала дешёвые</option>
                           <option value="price_DESC">Сначала дорогие</option>
-                          <option value="distance_ASC">Сначала ближе</option>
+                          <option value="remoteness_ASC">Сначала ближе</option>
                       </select>
                   </div>
                 </div>
@@ -56,7 +51,7 @@ export function renderSearchResultsBlock(places: IPlaces[]): void {
       html
     )
 
-    renderResultList(places)
+    renderResultList(places.getPlaces())
 
     document.querySelector('#searchSort').addEventListener('change', (e) => sortResults(e.target, places))
   }
@@ -121,18 +116,10 @@ function toggleFavoriteItem(e: Event): void {
   }
 }
 
-function sortResults(select: EventTarget, places: IPlaces[]): void { 
+function sortResults(select: EventTarget, places: Places): void { 
   if (select instanceof HTMLSelectElement) {
-    switch (select.value) { 
-    case sortVariants.price_ASC:
-      renderResultList(places.sort((a,b)=> a.price > b.price ? 1 : -1))
-      break;
-    case sortVariants.price_DESC:
-      renderResultList(places.sort((a,b)=> a.price < b.price ? 1 : -1))
-      break;
-    case sortVariants.distance_ASC:
-      renderResultList(places.sort((a,b)=> a.remoteness > b.remoteness ? 1 : -1))
-      break;
-    }
+    // const [orderBy, orderType] = select.value.split('_')
+    // console.log(places, orderBy, orderType);
+    
   }
 }

@@ -1,6 +1,7 @@
 import { getFlatsSDK, renderBlock, getHomeAPI } from './lib.js'
 import { IFindPlacesParams, IPlaces } from './interfaces.js'
 import { renderSearchResultsBlock } from './search-results.js'
+import { Places } from './classes.js'
 
 const TWO_DAYS = 2
 const ONE_MONTH = 1
@@ -86,18 +87,8 @@ function getSearchFormData(e: Event): void {
   search(searchFormData, renderSearchResultsBlock, homy, flatRent)
 }
 
-export async function search(params: IFindPlacesParams, render: (places: IPlaces[]) => void, homy: boolean, flatRent: boolean): Promise<void> { 
-  let allPlaces: IPlaces[] = [];
-
-  if (flatRent) { 
-    const places = await getFlatsSDK(params)
-    allPlaces = [...allPlaces, ...places]
-  }
-
-  if (homy) { 
-    const places = await getHomeAPI(params)
-    allPlaces = [...allPlaces, ...places]
-  }
+export async function search(params: IFindPlacesParams, render: (places: Places) => void, homy: boolean, flatRent: boolean): Promise<void> { 
+  const allPlaces = new Places(params, homy, flatRent)
 
   render(allPlaces)
 }

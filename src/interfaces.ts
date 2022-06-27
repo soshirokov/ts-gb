@@ -8,7 +8,8 @@ export interface IPlaces {
   price: number
 }
 
-export interface IUser { 
+export interface IUser{ 
+  [key: string]: string,
   username: string,
   avatarUrl: string
 }
@@ -20,11 +21,13 @@ export interface IRequestParams {
 }
 
 export interface IGetPlaceParams {
+  [key: string]: string | number | undefined,
   id: number,
   coordinates?: string,
 }
 
 export interface IFindPlacesParams {
+  [key: string]: string | number | undefined,
   city?: string,
   coordinates?: string,
   checkInDate: number,
@@ -33,6 +36,7 @@ export interface IFindPlacesParams {
 }
 
 export interface IBookPlaceParams {
+  [key: string]: number,
   id: number,
   checkInDate: number,
   checkOutDate: number
